@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>3D翻页效果demo</title>
+	<style type="text/css">
+		#layout {
+			-webkit-perspective: 800;
+			-webkit-perspective-origin: 50% top;
+		}
+
+		#pageGroup {
+			width: 400px;
+			height: 400px;
+			margin: 0 auto;
+			position: relative;
+		}
+
+		.page {
+			width: 360px;
+			height: 360px;
+			padding: 20px;
+			background-color: #f56c6c;
+			border-radius: 8px;
+			color: #fff;
+			font-weight: bold;
+			font-size: 300px;
+			line-height: 360px;
+			text-align: center;
+			position: absolute;
+
+			-webkit-transition: -webkit-transform 1s linear 0s;
+			-webkit-transform-origin: top;
+		}
+
+		#active {
+			width: 180px;
+			margin: 60px auto 0;
+		}
+
+		#active button {
+			width: 80px;
+			height: 30px;
+			cursor: pointer;
+			color: #409eff;
+			border: 1px solid #b3d8ff;
+			background-color: #ecf5ff;
+	    border-radius: 4px;
+	    outline: none;
+		}
+
+		#active button:hover {
+			background-color: #409eff;
+	    border-color: #409eff;
+	    color: #fff;
+	  }
+
+	  #active button:disabled {
+	    color: #8cc5ff;
+    	background-color: #ecf5ff;
+    	border-color: #d9ecff;
+	  }
+
+	  #prevBtn {
+	    margin-right: 15px;
+	  }
+
+	  p {
+	  	color: #666;
+	  	text-align: center;
+	  	margin-top: 20px;
+	  }
+	</style>
+</head>
+<body>
+	<div id="layout">
+		<div id="pageGroup">
+			<div class="page" style="z-index: 8">1</div>
+			<div class="page" style="z-index: 7">2</div>
+			<div class="page" style="z-index: 6">3</div>
+			<div class="page" style="z-index: 5">4</div>
+			<div class="page" style="z-index: 4">5</div>
+			<div class="page" style="z-index: 3">6</div>
+			<div class="page" style="z-index: 2">7</div>
+			<div class="page" style="z-index: 1">8</div>
+		</div>
+	</div>
+
+	<div id="active">
+		<button disabled id="prevBtn">prev</button>
+		<button id="nextBtn">next</button>
+	</div>
+
+	<p>注：不同的浏览器翻转效果有所不同。</p>
+
+	<script type="text/javascript">
+		var curIndex = 0,
+				curpage,
+				pageDoms = document.getElementsByClassName('page'),
+				prevBtn = document.getElementById('prevBtn'),
+				nextBtn = document.getElementById('nextBtn');
+
+		prevBtn.onclick = function () {
+			curIndex --;
+			pageDoms[curIndex].style.webkitTransform = 'rotateX(0deg)';
+			nextBtn.removeAttribute('disabled');
+			if (curIndex === 0) {
+				this.disabled = 'disabled';
+			}
+		};
+
+
+		nextBtn.onclick = function () {
+			pageDoms[curIndex].style.webkitTransform = 'rotateX(90deg)';
+
+			curIndex ++;
+			prevBtn.removeAttribute('disabled');
+			if (curIndex === pageDoms.length - 1) {
+				this.disabled = 'disabled';
+			}
+		};
+	</script>
+</body>
+</html>
