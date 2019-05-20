@@ -2,9 +2,28 @@ var board = new Array(),
 		score = 0,
 		hasConflicted = new Array();
 
+var startx = 0,
+		starty = 0,
+		endx = 0,
+		endy = 0;
+
 $(document).ready(function() {
+	sizeAdaptation();
 	newGame();
 });
+
+function sizeAdaptation() {
+	$('#grid-container').css({
+		width: gridContainerWidth - 2 * cellSpace,
+		height: gridContainerWidth - 2 * cellSpace,
+		padding: cellSpace
+	});
+
+	$('.grid-cell').css({
+		width: cellSideLength,
+		height: cellSideLength
+	});
+}
 
 function newGame() {
 	init();
@@ -15,14 +34,16 @@ function newGame() {
 
 // 初始化棋盘格
 function init() {
+	score = 0;
+
 	for (var i = 0; i < 4; i++) {
 		board[i] = new Array();
 		hasConflicted[i] = new Array();
 		for (var j = 0; j < 4; j++) {
 			var gridCell = $(`#grid-cell-${i}-${j}`);
 			gridCell.css({
-				top: 20 + i * 120,
-				left: 20 + j * 120
+				top: getPositionXY(i),
+				left: getPositionXY(j)
 			});
 
 			board[i][j] = 0;
@@ -39,14 +60,18 @@ function updateBoardView() {
 	for (var i = 0; i < 4; i++) {
 		for (var j = 0; j < 4; j++) {
 			$('#grid-container').append(`<div class="number-cell" id="number-cell-${i}-${j}"></div>`);
+			$('.number-cell').css({
+				lineHeight: cellSideLength + 'px',
+				fontSize: 0.45 * cellSideLength + 'px'
+			});
 			var numberCell = $(`#number-cell-${i}-${j}`);
 
 			if (board[i][j]) { // 当前格的数字不为0时
 				numberCell.css({
-					width: '100px',
-					height: '100px',
-					top: 20 + i * 120,
-					left: 20 + j * 120,
+					width: cellSideLength + 'px',
+					height: cellSideLength + 'px',
+					top: getPositionXY(i),
+					left: getPositionXY(j),
 					backgroundColor: getNumberBackgroundColor(board[i][j]),
 					color: getNumberColor(board[i][j])
 				});
@@ -55,8 +80,8 @@ function updateBoardView() {
 				numberCell.css({
 					width: 0,
 					height: 0,
-					top: 20 + i * 120 + 50,
-					left: 20 + j * 120 + 50
+					top: getPositionXY(i) + cellSideLength / 2,
+					left: getPositionXY(j) + cellSideLength / 2
 				});
 			}
 
@@ -117,24 +142,28 @@ function generateOneNumber() {
 $(document).keydown(function(event) {
 	switch(event.keyCode) {
 		case 37:
+			event.preventDefault();
 			if (moveLeft()) {
         setTimeout('generateOneNumber()', 210);
         setTimeout('isGameover()', 300);
 			}
 			break;
 		case 38:
+			event.preventDefault();
 			if (moveUp()) {
         setTimeout('generateOneNumber()', 210);
         setTimeout('isGameover()', 300);
 			}
 			break;
 		case 39:
+			event.preventDefault();
 			if (moveRight()) {
         setTimeout('generateOneNumber()', 210);
         setTimeout('isGameover()', 300);
 			}
 			break;
 		case 40:
+			event.preventDefault();
 			if (moveDown()) {
         setTimeout('generateOneNumber()', 210);
         setTimeout('isGameover()', 300);
@@ -142,6 +171,54 @@ $(document).keydown(function(event) {
 			break;
 		default:
 			break;
+	}
+});
+
+document.addEventListener('touchstart', function(event) {
+	startx = event.touches[0].pageX;
+	starty = event.touches[0].pageY;
+});
+
+document.addEventListener('touchmove', function(event) {
+	event.preventDefault();
+});
+
+document.addEventListener('touchend', function(event) {
+	endx = event.changedTouches[0].pageX;
+	endy = event.changedTouches[0].pageY;
+
+	var deltax = endx - startx,
+			deltay = endy - starty;
+
+	// 屏蔽点击事件
+	if (Math.abs(deltax) < 0.3 * documentWidth && Math.abs(deltay) < 0.3 * documentWidth) {
+		return false;
+	}
+
+	if (Math.abs(deltax) > Math.abs(deltay)) { // 水平滑动
+		if (deltax > 0) { // 向右滑动
+			if (moveRight()) {
+        setTimeout('generateOneNumber()', 210);
+        setTimeout('isGameover()', 300);
+			}
+		} else { // 向左滑动
+			if (moveLeft()) {
+        setTimeout('generateOneNumber()', 210);
+        setTimeout('isGameover()', 300);
+			}
+		}
+	} else { // 垂直滑动
+		if (deltay > 0) { // 向下滑动
+			if (moveDown()) {
+        setTimeout('generateOneNumber()', 210);
+        setTimeout('isGameover()', 300);
+			}
+		} else { // 向上滑动
+			if (moveUp()) {
+        setTimeout('generateOneNumber()', 210);
+        setTimeout('isGameover()', 300);
+			}
+		}
 	}
 });
 

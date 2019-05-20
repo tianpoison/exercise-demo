@@ -1,3 +1,12 @@
+var documentWidth = Math.min(window.screen.availWidth, 550);
+var gridContainerWidth = 0.92 * documentWidth,
+		cellSideLength = 0.18 *documentWidth,
+		cellSpace = 0.04 * documentWidth;
+
+function getPositionXY(xy) {
+	return cellSpace + xy * (cellSpace + cellSideLength);
+}
+
 function getNumberBackgroundColor(num) {
 	switch(num) {
 		case 2:
