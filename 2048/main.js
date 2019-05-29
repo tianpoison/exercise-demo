@@ -35,6 +35,7 @@ function newGame() {
 // 初始化棋盘格
 function init() {
 	score = 0;
+	$('#score').text(score);
 
 	for (var i = 0; i < 4; i++) {
 		board[i] = new Array();
